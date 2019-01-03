@@ -1,0 +1,4 @@
+1. APlayerController::ProjectWorldLocationToScreen()함수로 특정 액터의 월드좌표를 화면좌표로 변환하는것이 가능.
+
+2. 추가적으로 스크린좌표를 3d위치로 변환하는 APlayerController::DeprojectScreenPositionToWorld()나
+   화면상 마우스 위치를 3D위치료 변환하는 APlayerController::DeprojectMousePositionToWorld()함수도 있으니 참고

@@ -1,0 +1,5 @@
+1. 마우스입력 함수(OnMouseButtonDown 같은)를 오버라이딩 할때 넘어오는 FPointerEvent 이벤트를 이용해서 특수키(Ctrl, Alt, 같은)의 누름 여부 를 확인할수 있으니 참고
+
+2. 인자로 들어온 FPointerEvent를 그대로 활용해도 되고 UWidgetBlueprintLibrary::GetInputEventFromPointerEvent 함수를 이용해도 된다.(어자피 내부를 뜯어보면 그대로 리턴..)
+
+3. 영상에선 slot에 Shift버튼을 매핑했으나 DragDectect시에도 FPointerEvent가 넘어오기때문에 해당 값을 사용해도 무방할듯..

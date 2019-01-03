@@ -1,0 +1,11 @@
+1. 위젯의 Addto Viewport가 하는 역할은 선택된 위젯을 화면의 (0,0)~ 화면 끝까지 붙여버리는 역할. 그러므로 사이즈가 정해지지 않은 위젯은 화면을 덮어버리는 문제가 생긴다.
+
+2. 특정 액터에 위젯을 붙이고 싶은경우 위젯 컴포넌트나 직접 월드좌표를 화면좌표로 바꿔서 처리한다.
+
+3. APlayerController::ProjectWorldLocationToScreen() 함수를 이용하면 3D월드 좌표를 스크린 2D좌표료 투영가능. 해당 함수는 투영이 실패한경우(3D좌표가 너무멀어 화면에 투영이 안될경우) false반환
+   이함수는 카메라에 의존적. 그러므로 위젯 컴포넌트를 사용하지 않고 직접 위 함수로 위젯을 액터에 붙이려고 하는경우 메 틱마다 처리해야한다.
+
+4. 위젯의 visibility중 ESlateVisibility::Collapsed와 ESlateVisibility::Hidden이 있는데 UI가 안보이는건 동일하지만 Hidden은 위젯이 공간을 차지하고있는반면 Collapsed는 공간도 차지하지 않는차이가있다.
+
+5. 위젯에니메이션 시작과 끝에 이벤트처리를 하고 싶은경우 각각 UUserWidget::OnAnimationStarted, UUserWidget::OnAnimationStarted 함수를 사용하면 된다.
+   단 위 함수는 BlueprintNativeEvent니 네이티브 환경에서 정의할경우 뒤에 _Implementation을 붙여서 구현할것

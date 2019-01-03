@@ -1,0 +1,5 @@
+1. 드래그 드랍에 필요한 것은
+  - 드래그 드랍동작시에 커서에 붙어서 움직일 위젯(동일한 위젯을 사용해도 무방)
+  - 드래드 정보를 담을 드래그드랍 클래스(UDragDropOperation)
+
+2. 드래그 드랍에서 드랍 이벤트(OnDrop() / NativeOnDrop())를 받을 위젯은 이벤트를 받기위해 IsFocusable이 켜져있어야하고 visible상태가 ESlateVisibility::Visible로 세팅되어야 한다.

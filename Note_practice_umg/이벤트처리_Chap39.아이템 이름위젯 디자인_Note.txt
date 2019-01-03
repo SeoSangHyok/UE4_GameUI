@@ -1,0 +1,6 @@
+1. 특정 객체에 이벤트 헨들링처리(버튼이 클릭같은)를 위해서 델리게이트가 사용된다.
+
+2. 델리게이트는 따로 정의해서 Add시킨후 특정 시점에 broadcast하면 정의된 모든 곳에서 처리가 가능하니 편리!!
+
+3. 언리얼 델리게이트 정의 링크 남겨둔다.
+   http://api.unrealengine.com/KOR/Programming/UnrealArchitecture/Delegates/

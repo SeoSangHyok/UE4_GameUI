@@ -1,0 +1,5 @@
+1. Fstring을 이용해서 FText를 만드는 함수를 FText::FromString 이외에도
+  - FText::AsCultureInvariant
+  - UKismetTextLibrary::Conv_StringToText (내부를 뜯어보면 FText::AsCultureInvariant 를 랩핑해둔것)  이 있다.
+
+2. UKismetTextLibrary 에는 텍스트 처리와 관련된 쓸만한 내용이 많으니 참고

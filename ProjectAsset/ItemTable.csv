@@ -1,0 +1,6 @@
+﻿,ItemClassID,ItemName,ItemEquipSlot,ItemType,ItemFloat1,ItemModel,ItemThumb,TestItemClass,ItemDesc
+10,10,참치,Unknown,Consume,10,StaticMesh'/Game/Item/Model/SM_Item_Can.SM_Item_Can',Texture2D'/Game/Item/Thumbnail/T_ItemThumb_Can.T_ItemThumb_Can',AnimBlueprint'/Game/Mannequin/Animations/ThirdPerson_AnimBP.ThirdPerson_AnimBP_C',This is HealthCan
+20,20,Hammer,WeaponBack,Equip,100,StaticMesh'/Game/Item/Model/SM_Item_Hammer.SM_Item_Hammer',Texture2D'/Game/Item/Thumbnail/T_ItemThumb_Hammer.T_ItemThumb_Hammer',WidgetBlueprint'/Game/UMG/Exit_WB.Exit_WB_C',튼튼한 오함마!!
+30,30,권총,WeaponRightHand,Equip,100,StaticMesh'/Game/Item/Model/SM_Item_Pistol.SM_Item_Pistol',Texture2D'/Game/Item/Thumbnail/T_ItemThumb_Pistol.T_ItemThumb_Pistol',WidgetBlueprint'/Game/UMG/MainContainer_WB.MainContainer_WB_C',This Pistol so cute
+40,40,Rifle,WeaponBack,Equip,100,StaticMesh'/Game/Item/Model/SM_Item_Rifle.SM_Item_Rifle',Texture2D'/Game/Item/Thumbnail/T_ItemThumb_Rifle.T_ItemThumb_Rifle',WidgetBlueprint'/Game/UMG/PureBPWidget_WB.PureBPWidget_WB_C',M16 rifle. My feel so good
+50,50,Flashlight,WeaponLeftHand,Equip,0,StaticMesh'/Game/Item/Model/SM_Item_Flashlight.SM_Item_Flashlight',Texture2D'/Game/Item/Thumbnail/T_ItemThumb_Flashlight.T_ItemThumb_Flashlight',AnimBlueprint'/Game/Mannequin/Animations/ThirdPerson_AnimBP.ThirdPerson_AnimBP_C',마이 아이!!@!@!@#!@#

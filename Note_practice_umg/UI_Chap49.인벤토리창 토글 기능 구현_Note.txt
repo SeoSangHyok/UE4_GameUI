@@ -1,0 +1,3 @@
+1. 위젯 에니메이션 실행은 UUserWidget::PlayAnimation 으로 실행가능.
+
+2. 같은 에니메이션이 재생중이라면 UUserWidget::ReverseAnimation 으로 현재 재생위치에서 역방향으로 재생하는것이 가능.

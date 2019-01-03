@@ -1,0 +1,10 @@
+1. 텍스트 렌더러 엑터는 UMG와는 다르게 Font를 실행전에 모두 텍스처로 만든후(폰트캐시타입을 Offline으로 세팅) 해당 폰트를 사용하는 머티리얼로 랜더링해야한다.
+
+2. 폰트제작시 만들어지는 텍스쳐 사이즈는 너무크게 잡지 않도록 한다.(너무크면 랜더링시 폰트가 깨져버린다)
+
+3. 폰트임포트및 머티리얼 제작 참고자료 링크 남겨두니 참고
+  - https://answers.unrealengine.com/questions/282513/how-to-make-clean-big-text-renderers-with-custom-f.html
+  - http://unrealengine.tistory.com/38
+  - https://www.slideshare.net/wuwonyu/ss-37598349
+  - http://rgy0409.tistory.com/481
+  - http://liveupdate.tistory.com/275

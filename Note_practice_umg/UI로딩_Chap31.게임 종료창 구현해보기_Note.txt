@@ -1,0 +1,25 @@
+1. 유연한 UI시스템을 위해 UI프레임 워크를 생각해봤다.
+
+2. 메인 컨테이너 위젯을 두고 자손 위젯을 메인 컨테이너 위젯의 캔버스 패널에 에드하는 방식으로 처리
+
+3. 에디터와 패키지에서 위젯 클래스를 로딩하는 방법이 다소 차이가 있다. 왜 이리 되어있는지 모르겟지만 일단....
+   - 위젯은 생성할때 에셋레퍼런스가 아니라 클래스 래퍼런스를 요구한다. 이부분이 골치를 썪이는 부분인데
+     에디터에선 위젯레퍼런스 경로와 FSoftObjectPath를 이용해서 오브젝트를 로드한 후 GetClass()하는 방식이 되지만 패키징을 하면 동작하지 않는다...;;;
+     오브젝트 생성시 에셋 레퍼런스를 요구하는경우와 에셋 클래스 레퍼런스를 요구하는 경우를 확실하게 구분해서 처리할것. 걍 에디터에서 되니까 되겟지... 하다간 머리터진다...;;
+
+4. 에셋 클래스 레퍼런스를 불러오는 방법은 FSoftClassPath를 이용해서 로딩하는 방법과 기존처럼 FSoftObjectPath를 이용해서 로딩하는 방법 둘다 가능하다.(어자피 FSoftClassPath 내부적으로 FSoftObjectPath 방식을 사용할듯..)
+   - 에셋 클래스 래퍼런스경로는 에셋 래퍼런스 경로 뒤에 [_C] 를 붙이는것으로 가능. 위젯을 예로들어
+     위젯 에셋 레퍼런스 경로가 WidgetBlueprint'/Game/UMG/MainContainer_WB.MainContainer_WB' 인경우
+     위젯 클래스 레퍼런스 경로는 경로뒤에 _C를 붙인 WidgetBlueprint'/Game/UMG/MainContainer_WB.MainContainer_WB_C' 가 된다.
+
+   - FSoftClassPath 사용법은 FSoftObjectPath 사용법과 동일하다. 예를 들면 아래처럼 사용하면 끝
+     FSoftClassPath WidgetClassLoader(TEXT("WidgetBlueprint'/Game/UMG/MainContainer_WB.MainContainer_WB_C'"));
+	   UClass* WidgetClass = WidgetClassLoader.TryLoadClass<UUserWidget>(); // 템플릿 인자에 들어갈 클래스는 로드할 클래스의 부모 클래스
+
+   - FSoftObjectPath를 이용하는 방법도 다를거 없다. 위젯 클래스 래퍼런스 경로로 클래스 래퍼런스 경로를 얻어오고 해당 오브젝트를 로딩후 UClass로 형변환 시키면 끝
+     FSoftObjectPath AssetLoader(TEXT("WidgetBlueprint'/Game/UMG/MainContainer_WB.MainContainer_WB_C'"));
+     UClass* Object = Cast<UClass>(AssetLoader.TryLoad());
+
+   - 에셋 클래스 래퍼런스 경로를 생성하는 함수는 따로 제공되지 않는다. 그런 관계로 에셋 레퍼런스 경로를 인자로 받아 맨뒤에 _C를 붙여주는 함수는 따로 제작할 필요가 있다.
+
+   - 어떤것을 사용할지는 개인선택..

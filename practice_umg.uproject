@@ -1,0 +1,18 @@
+{
+	"FileVersion": 3,
+	"EngineAssociation": "{76AA704E-4765-944A-B054-CBBBD5C6B8ED}",
+	"Category": "",
+	"Description": "",
+	"Modules": [
+		{
+			"Name": "practice_umg",
+			"Type": "Runtime",
+			"LoadingPhase": "Default",
+			"AdditionalDependencies": [
+				"UMG",
+				"Engine",
+				"CoreUObject"
+			]
+		}
+	]
+}

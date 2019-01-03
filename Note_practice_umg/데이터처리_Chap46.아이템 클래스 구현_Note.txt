@@ -1,0 +1,45 @@
+1. 자신이 가지고 있는 아이템등의 정보를 처리할때는 플레이어 컨트롤러가 적합하다.
+
+2. 물론 네트워크가 붙거나 맵이동이 잦아서 게임모드가 자꾸 변경되는 경우에는 다른 방법을 생각해야한다.
+
+3. 언리얼에선 리플렉션 기능을 이용해서 변수명, 함수명만으로도 특정 오브젝트나 함수를 찾는것이 가능하다.
+   - 변수 리플랙션을 위해서는...
+     -- 리플렉션 기능을 사용할 변수는 모두 UPROPERTY 속성이 붙어야한다(당연 클래스도 UCLASS여야할것). 이는 C++에선 지원되지 않는 리플렉션을 언리얼 헤더툴을 이용해서 만들었기때문
+     -- TFieldIterator<T> 와 반복을 이용해서 프로퍼티들을 받아오는것이 가능 아래와 같이 사용가능
+        for (TFieldIterator<UProperty> PropIt(GetClass()); PropIt; ++PropIt)
+        {
+            UProperty* Property = *PropIt;
+            // Do something with the property
+        }
+
+     -- TFieldIterator의 탬플릿 인자에는 UProperty 상속 프로퍼티는 UnrealType.h에 정의 되어있으니 참고
+     -- int,float,double,string 같은 기본인자는 따로 정의되어있으며 그외에 오브젝트는 UObjectPropery가 있으니 해당 프로퍼티에서 값을 받아온후 형변환에서 사용하면된다.
+     -- FindField<UProperty 자손 탬플릿>(프로퍼티를 찾을 오브젝트 클래스, 프로퍼티(변수)이름) 으로 쉽게 사용하는것도 가능하다.
+        UObjectProperty* ObjProperty = FindField<UObjectProperty>(GetClass(), FName(TEXT("[변수명]")));
+        UObject* FindObj = ObjProperty->GetObjectPropertyValue_InContainer(this);
+        /* 이후 FindObj 를 상황에 맞게 캐스팅해서 사용 */
+
+   - 함수 리플랙션을 위해선..
+     -- 함수가 UFUNCTION 함수여야함
+     -- 프로퍼티 검색과 같이 순회도 가능하고.. ProcessEvent를 이용해서 호출도 가능
+        UClass* ClassInfo1 = StaticClass();
+        for (const auto& Entry : ClassInfo1->NativeFunctionLookupTable)
+        {
+            UFunction* Func1 = ClassInfo1->FindFunctionByName(Entry.Name);
+            if (Func1->ParmsSize == 0)
+            {
+              ProcessEvent(Func1, nullptr);
+            }
+        }
+      -- UClass::FindFunctionByName([함수명])을 이용해서 바로 함수 검색도 가능
+      -- 검색된 함수의 실행은 ProcessEvent() 함수로 가능
+      -- 만약 함수에 인자를 넘겨주고 싶을경우에는 구조체 선언후 구조체를 넘기는게 속편함. 아무래도 이벤트를 네이티브로 처리하는거라 인자가 있으면 많이 복잡해진다...
+         인자를 넣고싶은경우에대한 참고자료 링크남겨둔다.(아무래도 자바나 C#같이 첨부터 되는것이 아닌 c++로 만든것이다보니 좀 복잡)
+         https://answers.unrealengine.com/questions/7732/a-sample-for-calling-a-ufunction-with-reflection.html
+         https://answers.unrealengine.com/storage/attachments/904-callfunctionbynamewitharguments.txt
+         https://forums.unrealengine.com/development-discussion/c-gameplay-programming/112236-call-ufunction-with-return-value-via-reflection
+
+    - 기타 리플렉션에 관련한 자료 링크남겨둔다.
+      https://www.unrealengine.com/ko/blog/unreal-property-system-reflection
+      http://shootertutorial.com/2016/03/20/get-set-variables-by-name/
+      https://cafe.naver.com/unrealenginekr/13921

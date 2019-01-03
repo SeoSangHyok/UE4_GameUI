@@ -1,0 +1,7 @@
+1. 에디터나 BP를 이용한 콜리전 처리는 직관적이라 쉽지만 코드를 이용한 콜리전 변경은 다소 복잡하다. 다행이 이전에 다음블로그에 정리한 내용이 있어 해당 링크로 대신한다.
+   http://blog.daum.net/peace-day/22
+
+2. 언리얼 블로그에도 정리된 내용이 있어 링크남긴다.
+   https://www.unrealengine.com/ko/blog/collision-filtering?sessionInvalidated=true
+
+3. 일단 요약하자면 오브젝트들의 콜리전 프리셋은 따로 헤더파일을 이용해 미리 디파인해두고 사용하는게 정신건강에 이롭다는 이야기

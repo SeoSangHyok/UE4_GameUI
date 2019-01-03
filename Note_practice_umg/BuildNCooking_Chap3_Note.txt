@@ -1,0 +1,23 @@
+1. 언리얼 프로젝트 클라이언트/서버 빌드및 쿠킹을 할때 Source폴더에 각각 [프로젝트명]Client.Target.cs 와 [프로젝트명]Server.Target.cs 파일이 필요하다.
+   각 파일을 열어 클라이언트 / 서버 타겟 파일의 클래스명및 생성자는 각각 [프로젝트명]ClientTarget 과 [프로젝트명]ServerTarget 으로 변경하고
+   TargetType도 각각 TargetType.Client 와 TargetType.Server 로 변경해준다.
+
+2. 프로젝트 진행시 빌드및 쿠킹은 수시로 테스트해서 잘 되는지 확인하는것이 중요. 평소에 안하다 나중에 빌드나 쿠킹 에러가 나면 갱장히 고치기 난감한 상황이 발생한다.
+
+3. 네이티브(c++)프로젝트로 작업시 Blueprint Nativization Method를 Inclusive로 작동시키면 쿠킹시 BP Nativaiztion관련 에러가 난다. 예상인대
+   네이티브를 상속받은 BP를 다시 네이티브로 변경하려고 해서 발생하는듯 하다. Exclusive로 처리해서 순수 BP만 사용한 클래스들만 따로따로 세팅하면 될듯한대
+   아직 해보진 않은 상태..
+
+4. 3번관련 테스트 결과 Blueprint Nativization Method는 Exclusive로설정하고 BP생성시 네이티브시킬녀석들을 명시적으로 체크해주면 쿠킹시 에러가 발생하지 않는걸 확인했다.
+   좀더 테스트를 해봐야하겠지만 일단 위방법데로설정해서 개인프로젝트를 하나더 진행해볼 예정
+
+5. 프로젝트 런처를 이용한 릴리즈 튜토리얼 문서를 찾았다. 링크 남겨둔다.
+  - http://api.unrealengine.com/KOR/Engine/Deployment/Releasing/
+
+6. 프로젝트 런처 패널을 이용해서 클라이언트 패키징을 하면 위젯BP가 패키징되지 않는다.(1.19 버전 기준) 위 1번 항목을 진행하고 에디터 - [파일] - [패키지 프로젝트] - [빌드환경설정] 에 보면
+   Client 패키징 항목이 추가되어있다.(DebugGame Client, Development Client, Shipping Client) 여기서 Shipping Client로 패키징하면 정상적으로 모든 에셋들이 뽑혀나온다.
+   아무래도 메뉴를 이용한 패키징과 프로젝트 런처 패널로 패키징할때 언리얼 빌드툴에 들어가는 인자가 차이가 있는거같다. 이는 로그를 분석해봐야할듯..
+   그래도 되서 아주다행.. 이것땜시 1주일삽질했다.ㅋㅋㅋㅋ
+
+-ScriptsForProject=D:/Study_UE_4.19/practice_umg/practice_umg.uproject BuildCookRun -nocompileeditor -nop4 -project=D:/Study_UE_4.19/practice_umg/practice_umg.uproject -cook -stage -archive -archivedirectory=D:/Study_UE_4.19/practice_umg/Saved/StagedBuilds -package -clientconfig=Shipping -ue4exe=UE4Editor-Cmd.exe -clean -prereqs -targetplatform=Win64 -build -CrashReporter -client -utf8output -compile
+-ScriptsForProject=D:/Study_UE_4.19/practice_umg/practice_umg.uproject BuildCookRun -nocompileeditor -noP4 -project=D:/Study_UE_4.19/practice_umg/practice_umg.uproject -cook -stage                                                                             -package -clientconfig=Shipping -ue4exe=UE4Editor-Cmd.exe                                       -build                -client -utf8output -compile   -unversionedcookedcontent -createreleaseversion=1.0 -distribution -cmdline=" -Messaging" -addcmdline="-SessionId=A70EF90B48C58D34A3DABEA6972956FD -SessionOwner='Behemoth' -SessionName='BG_Client'" -serverconfig=Shipping -platform=Win64

@@ -1,0 +1,7 @@
+1. 언리얼에서 추가적인 폰트를 사용하기위해선
+  - 폰트파일을 구한다.
+  - 언리얼에 임포트 시킨다.
+  - 사용하면 끝
+
+2. 딱히 더쓸내용은 없고 추가적인 정보링크 남겨둔다.
+  - http://api.unrealengine.com/KOR/Engine/UMG/UserGuide/Fonts/index.html

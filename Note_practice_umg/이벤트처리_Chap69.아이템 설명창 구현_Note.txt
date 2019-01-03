@@ -1,0 +1,11 @@
+1. BP스크립트의 타이머와 DoOnce 그리고 Delay는 굉장히 유용한 기능이다. 하지만 남발하게 되면 디버깅이 아주아주 힘들어지는 상황이 오게되니 꼭필요한부분에만 사용할것!!
+
+2. 네이티브환경에서는  DoOnce는 플레그로, Delay는 타이머로 처리가 가능하다.
+
+3. 네이티브환경에서 타이머 사용자료 링크 남겨둔다.
+   https://www.tomlooman.com/using-timers-in-ue4/
+
+4. 추가로 타이머 사용시 직접 UFUNCTION을 만들어서 사용도 할수 있지만 람다식을 사용하면 코드가 한결더 매끄러워진다. 링크 남겨두니 참고
+   https://forums.unrealengine.com/development-discussion/c-gameplay-programming/41762-can-i-use-lambda-with-timers
+
+5. 어떤델리게이트를 어떻게 사용하면 람다를 바인드 할수있는지는 좀더 확인이 필요..

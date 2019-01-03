@@ -1,0 +1,29 @@
+1. 언리얼은 빌드속도 향상을 위해서 IWYU(Include What You Use)형식을 사용한다.
+  - 참고 url http://api.unrealengine.com/KOR/Programming/UnrealBuildSystem/IWYUReferenceGuide/)
+
+2. 이방식으로 인해서 해더에서 특정 클래스의 포인터형을 사용하기위해서는 나 include하진 않았지만 특정 클래스를 사용할거다라는 이야기를 해줘야한다.
+  - 특정 클래스의 포인터를 사용하고자 하는 변수 함수에 클래스 포인터형 앞에 class 를 붙여준다.
+    class XXXXX* testClassPtr;
+    class XXXXX* TestClassFunc(class YYYYY* y, class ZZZZZ* z) 와 같이
+
+  - 아니면 클래스 해더파일에 따로 클래스 전방선언처리 후 사용
+    class YYYY;
+    UCLASS()
+    class XXXX
+    {
+      YYYY* testVal;
+      YYYY* TestClassFunc(YYYY* y)
+    }
+
+3. 마찬가지로 Enum도 전방선언처리 가능.
+   enum class EXXXX : uint8;
+   UCLASS()
+   class XXXX
+   {
+     EXXXX TestEnumFunc()
+   }
+
+4. 전방선언처리가 들어간 변수나 함수는 cpp에서 반드시 해당 정의가 들어있는 헤더를 include하고 사용해야한다.
+
+5. enum 전방선언에 대한 참고자료 링크 남겨둔다.
+  http://jacking.tistory.com/985

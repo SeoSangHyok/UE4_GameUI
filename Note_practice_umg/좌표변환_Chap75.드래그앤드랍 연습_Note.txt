@@ -1,0 +1,7 @@
+1. USlateBlueprintLibrary::AbsoluteToLocal의 경우 화면 전체를 덮고있는 켄버스패널에 위젯을 붙이거나 이동시킬때 유용
+
+2. 인자로 넘어오는 InGeometry는 해당 인자가 넘어오는 위젯이라고 보면 됨
+
+3. 위젯 내부의 마우스 좌표 오프셋은...
+  - FPointerEvent::GetScreenSpacePosition()으로 마우스 스크린 좌표를 구하고
+  - USlateBlueprintLibrary::AbsoluteToLocal 함수로 마우스 내부 로컬좌표를 구하면 해당 좌표가 오프셋

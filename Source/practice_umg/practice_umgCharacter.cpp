@@ -1,0 +1,178 @@
+// Copyright 1998-2018 Epic Games, Inc. All Rights Reserved.
+
+#include "practice_umgCharacter.h"
+#include "UObject/ConstructorHelpers.h"
+#include "Camera/CameraComponent.h"
+#include "Components/DecalComponent.h"
+#include "Components/CapsuleComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
+#include "GameFramework/PlayerController.h"
+#include "GameFramework/SpringArmComponent.h"
+#include "HeadMountedDisplayFunctionLibrary.h"
+#include "Materials/Material.h"
+#include "Engine/World.h"
+#include "Runtime/Engine/Classes/Components/StaticMeshComponent.h"
+#include "Components/ArrowComponent.h"
+#include "Runtime/Engine/Classes/Engine/StaticMesh.h"
+#include "Item/InventoryItem.h"
+#include "ITem/ItemTableDef.h"
+
+Apractice_umgCharacter::Apractice_umgCharacter()
+{
+	// Set size for player capsule
+	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
+	GetCapsuleComponent()->ComponentTags.Add(FName(TEXT("ItemPickingBoundary")));
+
+
+	// Don't rotate character to camera direction
+	bUseControllerRotationPitch = false;
+	bUseControllerRotationYaw = false;
+	bUseControllerRotationRoll = false;
+
+	// Configure character movement
+	GetCharacterMovement()->bOrientRotationToMovement = true; // Rotate character to moving direction
+	GetCharacterMovement()->RotationRate = FRotator(0.f, 640.f, 0.f);
+	GetCharacterMovement()->bConstrainToPlane = true;
+	GetCharacterMovement()->bSnapToPlaneAtStart = true;
+
+	// Create a camera boom...
+	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
+	CameraBoom->SetupAttachment(RootComponent);
+	CameraBoom->bAbsoluteRotation = true; // Don't want arm to rotate when character does
+	CameraBoom->TargetArmLength = 800.f;
+	CameraBoom->RelativeRotation = FRotator(-60.f, 0.f, 0.f);
+	CameraBoom->bDoCollisionTest = false; // Don't want to pull camera in when it collides with level
+
+	// Create a camera...
+	TopDownCameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("TopDownCamera"));
+	TopDownCameraComponent->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
+	TopDownCameraComponent->bUsePawnControlRotation = false; // Camera does not rotate relative to arm
+
+	WeaponBack = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("WeaponBack"));;
+	WeaponBack->SetupAttachment(GetMesh(), FName(TEXT("WeaponBack")));
+
+	WeaponRightHand = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("WeaponRightHand"));;
+	WeaponRightHand->SetupAttachment(GetMesh(), FName(TEXT("WeaponRightHand")));
+
+	WeaponLeftHand = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("WeaponLeftHand"));;
+	WeaponLeftHand->SetupAttachment(GetMesh(), FName(TEXT("WeaponLeftHand")));
+
+	FootLocate = CreateDefaultSubobject<UArrowComponent>(TEXT("FootLocate"));;
+	FootLocate->SetupAttachment(RootComponent);
+	FootLocate->SetRelativeLocation(FVector(0.0f,0.0f,-80.0f));
+
+	// Create a decal in the world to show the cursor's location
+	CursorToWorld = CreateDefaultSubobject<UDecalComponent>("CursorToWorld");
+	CursorToWorld->SetupAttachment(RootComponent);
+	static ConstructorHelpers::FObjectFinder<UMaterial> DecalMaterialAsset(TEXT("Material'/Game/TopDownCPP/Blueprints/M_Cursor_Decal.M_Cursor_Decal'"));
+	if (DecalMaterialAsset.Succeeded())
+	{
+		CursorToWorld->SetDecalMaterial(DecalMaterialAsset.Object);
+	}
+	CursorToWorld->DecalSize = FVector(16.0f, 32.0f, 32.0f);
+	CursorToWorld->SetRelativeRotation(FRotator(90.0f, 0.0f, 0.0f).Quaternion());
+
+	// Activate ticking in order to update the cursor every frame.
+	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bStartWithTickEnabled = true;
+}
+
+void Apractice_umgCharacter::Tick(float DeltaSeconds)
+{
+    Super::Tick(DeltaSeconds);
+
+	if (CursorToWorld != nullptr)
+	{
+		if (UHeadMountedDisplayFunctionLibrary::IsHeadMountedDisplayEnabled())
+		{
+			if (UWorld* World = GetWorld())
+			{
+				FHitResult HitResult;
+				FCollisionQueryParams Params(NAME_None, FCollisionQueryParams::GetUnknownStatId());
+				FVector StartLocation = TopDownCameraComponent->GetComponentLocation();
+				FVector EndLocation = TopDownCameraComponent->GetComponentRotation().Vector() * 2000.0f;
+				Params.AddIgnoredActor(this);
+				World->LineTraceSingleByChannel(HitResult, StartLocation, EndLocation, ECC_Visibility, Params);
+				FQuat SurfaceRotation = HitResult.ImpactNormal.ToOrientationRotator().Quaternion();
+				CursorToWorld->SetWorldLocationAndRotation(HitResult.Location, SurfaceRotation);
+			}
+		}
+		else if (APlayerController* PC = Cast<APlayerController>(GetController()))
+		{
+			FHitResult TraceHitResult;
+			PC->GetHitResultUnderCursor(ECC_Visibility, true, TraceHitResult);
+			FVector CursorFV = TraceHitResult.ImpactNormal;
+			FRotator CursorR = CursorFV.Rotation();
+			CursorToWorld->SetWorldLocation(TraceHitResult.Location);
+			CursorToWorld->SetWorldRotation(CursorR);
+		}
+	}
+}
+
+float Apractice_umgCharacter::Heal(float AmountOfHeal)
+{
+	HP += AmountOfHeal;
+	HP = FMath::Clamp(HP, 0.0f, MaxHP);
+
+	return HP / MaxHP;
+}
+
+void Apractice_umgCharacter::EquipWeapon(UInventoryItem* InventoryItem)
+{
+	if (!IsValid(InventoryItem))
+		return;
+
+	const FItemTableRow* ItemTable = InventoryItem->GetItemTableRow();
+	if (nullptr == ItemTable)
+		return;
+
+	UStaticMesh* ItemMesh = Cast<UStaticMesh>(ItemTable->ItemModel.TryLoad());
+	if (!IsValid(ItemMesh))
+		return;
+
+	switch (ItemTable->ItemEquipSlot)
+	{
+	case EItemEquipSlot::WeaponBack:
+		WeaponBack->SetStaticMesh(ItemMesh);
+		break;
+	case EItemEquipSlot::WeaponLeftHand:
+		WeaponRightHand->SetStaticMesh(ItemMesh);
+		break;
+	case EItemEquipSlot::WeaponRightHand:
+		WeaponLeftHand->SetStaticMesh(ItemMesh);
+		break;
+	}
+}
+
+void Apractice_umgCharacter::ClearWeapon(UInventoryItem* InventoryItem)
+{
+	if (!IsValid(InventoryItem))
+		return;
+
+	const FItemTableRow* ItemTable = InventoryItem->GetItemTableRow();
+	if (nullptr == ItemTable)
+		return;
+
+	switch (ItemTable->ItemEquipSlot)
+	{
+	case EItemEquipSlot::WeaponBack:
+		WeaponBack->SetStaticMesh(nullptr);
+		break;
+	case EItemEquipSlot::WeaponLeftHand:
+		WeaponRightHand->SetStaticMesh(nullptr);
+		break;
+	case EItemEquipSlot::WeaponRightHand:
+		WeaponLeftHand->SetStaticMesh(nullptr);
+		break;
+	}
+}
+
+FVector Apractice_umgCharacter::GetFootLocation()
+{
+	if (IsValid(FootLocate))
+	{
+		return FootLocate->GetComponentTransform().GetLocation();
+	}
+
+	return GetActorLocation();
+}

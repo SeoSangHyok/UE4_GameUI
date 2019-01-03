@@ -1,0 +1,17 @@
+1. 위젯 마우스 인풋관련 함수를 오버라이딩하면 FPointerEvent 가 넘어온다. 해당 이벤트에는 마우스좌표나 입력키값등을 받아올수 있는 기능이 있다.
+
+2. FPointerEvent::GetScreenSpacePosition 함수를 이용하면 화면좌표. 말그대로 모니터화면의 절대적인 좌표값을 얻어올수 있다.
+
+3. 당연히 안된다!! 화면이 윈도우 모드일수도 있으므로 반드시 뷰포트기준좌표로 변경해서 처리해야 한다.
+
+4. 뷰포트기준좌표로 변환은 USlateBlueprintLibrary::AbsoluteToViewport 함수를 이용해서 얻어온다.
+
+5. USlateBlueprintLibrary::AbsoluteToViewport 의 반환값은 ViewportPixelPos, ViewportPos 두게가 있다.
+  - PixelPosition : dpi스케일링이 적용된값
+  - ViewportPos : dpi스케일링이 적용되지않은 순수 위치값
+
+6. 만약 위젯을 특정패널에 붙이는것에 아니라 AddToViewport 함수를 이용해서 붙인것이라면 PixelPosition값을 사용해서 dpi스케일링이 적용된 뷰포트 위치에 위젯의 좌표를 설정해야한다.
+   하지만 위젯을 직접 뷰포트에 붙인것이 아니라 특정 위젯의 패널(CanvasPanel같은)에 붙인것이라면 Viewport값과 슬롯의 위치를 이용해서 위치값을 정해준다.
+
+7. AddToViewport함수로 위젯을 직접 뷰포트에 붙이면 위젯은 자동으로 화면 전체영역으로 늘려져서 붙여진다. 전체화면 이면 상관없겠지만 툴팁같이 뷰포트내에 일정부분만 차지하는 위젯은
+   늘려지면 안된다. 이때는 AddToViewport 이후 SetPositionInViewport() 함수로 위치를 잡아주면 위젯 영역만큼의 공간만 차지하게 된다.

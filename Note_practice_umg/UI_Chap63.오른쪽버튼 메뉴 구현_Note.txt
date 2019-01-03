@@ -1,0 +1,17 @@
+1. UMG에서 우클릭 처리를 하려면 위젯 자체에서 마우스 처리를 오버라이딩해서 처리해야한다.
+  - BP에서는 On Mouse Button Down을 오버라이딩해서 처리
+  - 네이티브에선 UUserWidget::NativeOnMouseButtonDown() 함수를 오버라이딩해서 처리
+
+2. 마우스 우클릭은 오버라이딩 한 함수안에서 FPointerEvent::IsMouseButtonDown 함수를 사용해서 검출한다.
+  - 마우스 우클릭 뿐만 아니라 다른 키 입력도 검출가능
+
+3. 개인적인 생각이지만 위와같이 처리하는것은 하드코딩과 같은것이니 프로젝트 세팅에서 엑션키를 맵핑하고 해당 키를 찾아서 처리하는게 더 낫지 않을까한다.
+
+4. 위와같은 함수들을 오버라이딩 처리를 하는경우 반드시 FReply를 반환해야 하는데 static하게 FReply::Handled() 와 FReply::Unhandled() 가 있다.
+  - FReply::Handled() : 해당 UI에서 인풋처리가 완료됬음을 의미 더이상 UI순회를 하지 않는다.
+  - FReply::UnHandled() : 해당 UI에서 인풋처리가 완료되지 않았음을 의미 UI순회를 계속해서 한다.
+  - 즉 해당 함수가 호출되는 경우 FReply::UnHandled()가 반환되기전까지 다른 위젯(위젯트리안의)에 계속해서 해당 함수를 호출하게된다.
+
+5. FReply 를 사용하기위해선 SlateCore 모듈이 필요하다. [프로젝트].bullid.cs파일에 SlateCore를 등록할것
+
+6. UI에서는 가급적 처리가 아닌 이벤트발생을 전달하는 역할만 처리하는게 좋다. 역시 이 작업에서 가능 유용한것은 델리게이트!!!

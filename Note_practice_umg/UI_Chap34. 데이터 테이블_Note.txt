@@ -1,0 +1,1 @@
+1. UI용 텍스쳐 에셋은 Mip Gen Setting : NoMipmaps, Texture Group을 UI, Compression Setting 을 Userinterface2D로 설정해야 UI이미지의 뭉게짐없 사용가능

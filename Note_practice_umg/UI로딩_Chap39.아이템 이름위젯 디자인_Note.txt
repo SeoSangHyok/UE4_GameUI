@@ -1,0 +1,3 @@
+1. 위젯의 에니메이션 리스트를 저장할수 있는 UUserWidget 자손 클래스를 정의해서 에니메이션 처리도 가능하게끔
+   - UI_Chap28.위젯 애니메이션_Note.txt 에서 얻어온 위젯에니메이션의 이름(GetFName이용)을 키값으로하는 Map을 생성 위젯 에니메이션을 저장.
+   - 애니메이션의 시작과 끝마다  UUserWidget::OnAnimationStarted, UUserWidget::OnAnimationStarted 함수가 호출되니 애니메이션 이름별로 처리할 것들을 지정하면 좋을듯
