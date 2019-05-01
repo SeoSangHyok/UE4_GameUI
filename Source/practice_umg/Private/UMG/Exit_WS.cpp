@@ -41,7 +41,7 @@ bool UExit_WS::Initialize()
 
 void UExit_WS::OnClickedYesButton()
 {
-	UKismetSystemLibrary::QuitGame(GetOwningPlayer()->GetWorld(), GetOwningPlayer(), EQuitPreference::Type::Quit);
+	UKismetSystemLibrary::QuitGame(GetOwningPlayer()->GetWorld(), GetOwningPlayer(), EQuitPreference::Type::Quit, true);
 }
 
 void UExit_WS::OnClickedNoButton()

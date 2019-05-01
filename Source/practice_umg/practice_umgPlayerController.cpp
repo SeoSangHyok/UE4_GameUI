@@ -3,7 +3,8 @@
 #include "practice_umgPlayerController.h"
 #include "practice_umg_GameInstance.h"
 #include "TableManager.h"
-#include "AI/Navigation/NavigationSystem.h"
+#include "AI/NavigationSystemBase.h"
+#include "Runtime/AIModule/Classes/Blueprint/AIBlueprintHelperLibrary.h"
 #include "Runtime/Engine/Classes/Components/DecalComponent.h"
 #include "Runtime/Engine/Classes/Kismet/KismetMathLibrary.h"
 #include "HeadMountedDisplayFunctionLibrary.h"
@@ -91,7 +92,7 @@ void Apractice_umgPlayerController::MoveToMouseCursor()
 		{
 			if (MyPawn->GetCursorToWorld())
 			{
-				UNavigationSystem::SimpleMoveToLocation(this, MyPawn->GetCursorToWorld()->GetComponentLocation());
+				UAIBlueprintHelperLibrary::SimpleMoveToLocation(this, MyPawn->GetCursorToWorld()->GetComponentLocation());
 			}
 		}
 	}
@@ -128,13 +129,13 @@ void Apractice_umgPlayerController::SetNewMoveDestination(const FVector DestLoca
 	APawn* const MyPawn = GetPawn();
 	if (MyPawn)
 	{
-		UNavigationSystem* const NavSys = GetWorld()->GetNavigationSystem();
+		//UNavigationSystem* const NavSys = GetWorld()->GetNavigationSystem();
 		float const Distance = FVector::Dist(DestLocation, MyPawn->GetActorLocation());
 
 		// We need to issue move command only if far enough in order for walk animation to play correctly
-		if (NavSys && (Distance > 120.0f))
+		if ((Distance > 120.0f))
 		{
-			NavSys->SimpleMoveToLocation(this, DestLocation);
+			UAIBlueprintHelperLibrary::SimpleMoveToLocation(this, DestLocation);
 		}
 	}
 }
